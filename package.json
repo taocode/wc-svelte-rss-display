@@ -6,10 +6,11 @@
   "type": "module",
   "homepage": "{{ homepage }}",
   "scripts": {
+    "dev": "pnpx wcd-cli@latest serve GVnMIDiZxBwfxgP5x7D4 --open",
     "serve": "npx wcd-cli@latest serve GVnMIDiZxBwfxgP5x7D4 --open"
   },
   "dependencies": {
-    "lit-html": "^1"
+    "lit-html": "^2"
   },
   "devDependencies": {
     "svelte": "^3.55.0"
