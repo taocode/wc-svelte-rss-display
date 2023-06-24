@@ -1,0 +1,1 @@
+export { default, default as RssDisplay } from "./index.svelte"

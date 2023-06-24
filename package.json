@@ -1,0 +1,17 @@
+{
+  "name": "@wcd/taocode.svelte-lj90mbit",
+  "version": "0.0.0",
+  "description": "",
+  "license": "ISC",
+  "type": "module",
+  "homepage": "{{ homepage }}",
+  "scripts": {
+    "serve": "npx wcd-cli@latest serve GVnMIDiZxBwfxgP5x7D4 --open"
+  },
+  "dependencies": {
+    "lit-html": "^1"
+  },
+  "devDependencies": {
+    "svelte": "^3.55.0"
+  }
+}
