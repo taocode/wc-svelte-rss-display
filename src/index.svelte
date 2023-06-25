@@ -6,7 +6,7 @@
 	export let feeds
 	export let dedupe = true
 	export let cache = true
-	export let cachetimeout = 30*60*1000
+	export let cachetimeout = 3*60*1000
 
 	let parsedFeeds = []
 	try {
@@ -24,7 +24,7 @@
 		}
 	}
 	let show = true
-	const cors = 'https://proxy-j4bychtceq-uc.a.run.app'
+	const cors = 'https://proxy-j4bychtceq-uc.a.run.app/'
 	function getContent(xmlObj, tagName) {
     return xmlObj.getElementsByTagName(tagName)[0].textContent
   }
@@ -34,11 +34,14 @@
 	let lastFetch = localStorage.getItem(CACHE_LAST) || 0
 
 	onMount(async () => {
-		const now = new Date()
-		const timeDelta = now.getTime() - lastFetch
+		const timeDelta = Date.now() - lastFetch
 		if (cache && timeDelta < cachetimeout * 2) {
 			articles = JSON.parse(localStorage.getItem(CACHE_ARTICLES))
-			console.log(`${articles.length} articles from ${parseInt(timeDelta/(60*1000))}m old cache`,)
+			console.log(`${articles.length} articles from ${parseInt(timeDelta/(60*1000))}m old cache`)
+			articles = articles.map(a => {
+				a.date = new Date(a.date)
+				return a
+			})
 			if (timeDelta < cachetimeout) {
 				console.log('cached articles are fresh')
 				return
@@ -60,15 +63,24 @@
 						// console.log('Item:',getContent(item,'title'),{item})
 						const titleEl = document.createElement("h3")
 						titleEl.innerHTML = getContent(item, 'title')
+						const titleText = titleEl.innerText
 						const descEl = document.createElement("div")
 						descEl.innerHTML = getContent(item, 'description')
-						if (! dedupe || dedupe && ! articles.some(a => a.title === titleEl.innerText))
+						const extant = articles.some(a => a.title === titleText)
+						if (dedupe && extant) {
+							articles = articles.map(c => {
+								if (c.title === titleText && ! c.tag.includes(f.tag)) c.tag += ' ' + f.tag
+								return c
+							})
+							return
+						}
 						articles.push({
 							'feed': f.title,
 							'title': titleEl.innerText,
 							'description': descEl.innerText,
 							'href': getContent(item, 'link'),
 							'date': new Date(getContent(item, 'pubDate')),
+							'tag': f.tag,
 							// 'thumbnail': item.getElementsByTagName('enclosure')[0].getAttribute('url'),
 							// 'source': item.getElementsByTagName('source')[0].getAttribute('url')
 						})
@@ -78,18 +90,24 @@
 		)
 		articles = articles.sort((a,b) => b.date - a.date)
 		localStorage.setItem(CACHE_ARTICLES, JSON.stringify(articles))
-		localStorage.setItem(CACHE_LAST, now.getTime())
+		localStorage.setItem(CACHE_LAST, Date.now())
   })
 	$: show = articles.length
+	const dtFormat = new Intl.DateTimeFormat("en", {
+		dateStyle: 'medium',
+		// timeStyle: 'long'
+	})
 </script>
 
-
-<h2>Articles</h2>
 <ul>
 	{#each articles as a}
-	<li class:academy={a.feed === 'Academy'} class:college={a.feed === 'College'}>
+	<li class="{a.tag}">
 		<a href="{a.href}">
 			<h3>{a.title}</h3>
+			<div>
+				<span class="pubdate">{dtFormat.format(a.date)}</span>
+				<span class="feeds">{a.tag}</span>
+			</div>
 			<div>{a.description}</div>
 		</a>
 	</li>
@@ -100,23 +118,18 @@
 	a {
 		display: block;
 		text-decoration: none;
-	}
-	.academy a {
-		color: purple;
-	}
-	.college a {
-		color: darkblue;
+		padding: 0.5em;
 	}
 	a:hover h3 {
 		text-decoration: underline;
 	}
-	a div {
-		text-decoration: none;
+	ul {
+		list-style-type: none;
+		padding: 0;
 	}
-	span {
-		width: 4rem;
-		display: inline-block;
-		text-align: center;
+	.feeds,
+	.pubdate {
+		font-size: 0.8em;
 	}
 
 	button {
