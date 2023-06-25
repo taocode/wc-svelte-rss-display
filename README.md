@@ -9,8 +9,8 @@ import './src/index.svelte'
 ```html preview-story
   <taocode-rss-display
   feeds='[
-  {"src":"https://www.salem.edu/news/rss","title":"College News"},
-  {"src":"https://www.salemacademy.com/rss/news","title":"Academy News"}
+  {"src":"https://www.salem.edu/news/rss","title":"College"},
+  {"src":"https://www.salemacademy.com/rss/news","title":"Academy"}
   ]'></taocode-rss-display>
 ```
 
