@@ -2,7 +2,7 @@
 import './src/index.svelte'
 ```
 
-# Svelte Starter Kit
+# RSS Feed Web Component
 
 ## Articles from Feeds
 

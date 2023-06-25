@@ -103,12 +103,14 @@
 	{#each articles as a}
 	<li class="{a.tag}">
 		<a href="{a.href}">
-			<h3>{a.title}</h3>
-			<div>
+			<div class="date-tags">
 				<span class="pubdate">{dtFormat.format(a.date)}</span>
-				<span class="feeds">{a.tag}</span>
+				{#each a.tag.split(' ') as t}
+				<span class="tag">{t}</span>
+				{/each}
 			</div>
-			<div>{a.description}</div>
+			<h3>{a.title}</h3>
+			<p>{a.description}</p>
 		</a>
 	</li>
 	{/each}
@@ -120,6 +122,9 @@
 		text-decoration: none;
 		padding: 0.5em;
 	}
+	h3,p {
+		margin: 0.4em 0 0.3em;
+	}
 	a:hover h3 {
 		text-decoration: underline;
 	}
@@ -127,9 +132,19 @@
 		list-style-type: none;
 		padding: 0;
 	}
-	.feeds,
+	.date-tags {
+		margin-top: 0.75em;
+	}
+	.tag,
 	.pubdate {
 		font-size: 0.8em;
+	}
+	.tag {
+		margin: 0 0.25em;
+		padding: 0.2em 0.4em;
+		border-radius: 0.2rem;
+		background-color: #CCC7;
+		text-transform: uppercase;
 	}
 
 	button {
